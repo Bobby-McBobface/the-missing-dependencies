@@ -1,5 +1,11 @@
 # Python Discord Code Jam Repository Template
 
+# Dev environment setup
+1. `pip install poetry`
+2. `poetry shell`
+3. `poetry install`
+4. `pre-commit install`
+
 ## A Primer
 Hello code jam participants! We've put together this repository template for you to use in [our code jams](https://pythondiscord.com/events/) or even other Python events!
 
