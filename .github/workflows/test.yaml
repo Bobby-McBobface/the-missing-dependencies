@@ -1,0 +1,32 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency: test-${{ github.sha }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      PYTHON_VERSION: "3.11"
+
+    steps:
+      - name: Checks out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run Pytest
+        run: pytest
