@@ -11,12 +11,13 @@ black = "^23.7.0"
 
 [tool.poetry.dev-dependencies]
 # Base tools
-flake8 = "^4.0.1"
+ruff = "^0.0.286
 isort = "^5.12.0"
 pre-commit = "^2.21.0"
 
-# Flake8 plugins, see https://github.com/python-discord/code-jam-template/tree/main#plugin-list
-flake8-docstrings = "^1.7.0"
+[tool.ruff]
+line-length = 88
+src = ["src"]
 
 [tool.pyright]
 typeCheckingMode = "strict"
