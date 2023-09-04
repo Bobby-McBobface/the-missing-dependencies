@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "the-missing-dependencies"
+version = "0.1.0"
+description = "Python Discord Summer Code Jam 2023"
+authors = ["Bobby-McBobface <54757965+Bobby-McBobface@users.noreply.github.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "3.11.*"
+black = "^23.7.0"
+
+[tool.poetry.dev-dependencies]
+# Base tools
+ruff = "^0.0.286"
+isort = "^5.12.0"
+pre-commit = "^2.21.0"
+pytest = "^7.4.0"
+
+[tool.ruff]
+line-length = 88
+src = ["src"]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+
+[tool.isort]
+profile = 'black'
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
