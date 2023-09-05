@@ -3,7 +3,7 @@ import sys
 
 
 def runner(byte_str: bytes):
-    decoded_text = byte_str.decode("ansi")
+    decoded_text = byte_str.decode("utf-8")
 
     stdout_backup = sys.stdout
     sys.stdout = io.StringIO()
