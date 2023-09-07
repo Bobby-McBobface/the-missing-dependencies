@@ -30,4 +30,5 @@ jobs:
           poetry install
 
       - name: Run Pytest
+        working-directory: ./backend
         run: poetry run pytest
