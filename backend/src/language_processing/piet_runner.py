@@ -1,4 +1,5 @@
 import operator
+from enum import Enum
 
 
 class PietException(Exception):
@@ -62,3 +63,27 @@ class PietStack(list[int]):
 
     def outchar(self):
         print(chr(self.pop()))
+
+
+class DirectionPointer:
+    def __init__(self) -> None:
+        class Direction(Enum):
+            UP = (0, 1)
+            DOWN = (0, -1)
+            LEFT = (-1, 0)
+            RIGHT = (0, 1)
+
+        self.direction: Direction = Direction.RIGHT
+
+
+class CodelChooser:
+    def __init__(self) -> None:
+        class Direction(Enum):
+            LEFT = (-1, 0)
+            RIGHT = (0, 1)
+
+        self.direction: Direction = Direction.LEFT
+
+
+def piet_runner():
+    pass
