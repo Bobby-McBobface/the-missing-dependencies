@@ -1,15 +1,17 @@
 import io
 import sys
 
+from PIL import Image
 
-def runner(byte_str: bytes):
+
+def python_runner(byte_str: bytes):
     decoded_text = byte_str.decode("utf-8")
 
     stdout_backup = sys.stdout
     sys.stdout = io.StringIO()
 
     try:
-        exec(decoded_text)
+        exec(decoded_text, {"img": Image.new("RGBA", (128, 128))})
         captured_output = sys.stdout.getvalue()
     finally:
         sys.stdout = stdout_backup
