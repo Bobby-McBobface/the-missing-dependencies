@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 interface HelpersType {
     name: string;
@@ -6,7 +7,25 @@ interface HelpersType {
     borderColor: string;
 }
 
-const Editor = () => {
+function Editor({ onCodeExecution }) {
+    const [code, setCode] = useState('');
+    const [error, setError] = useState('');
+
+    const handleCodeChange = (event) => {
+        setCode(event.target.value);
+    };
+
+    const runCode = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/run', { code });
+      onCodeExecution(response.data.output);
+      setCode('');
+      setError(response.data.error);
+    } catch (error) {
+        setError('An error occurred while running the code.');
+        }
+    };
+
     const Helpers: HelpersType[] = [
         {
             name: "if",
@@ -25,6 +44,10 @@ const Editor = () => {
                 Editor
             </div>
             <div className="grow"></div>
+            <div>
+                <h2>Run Code</h2>
+                <textarea rows="4" cols="50" value={code} onChange={handleCodeChange} /> // Change this to the image area. //
+            </div>
             <div className="h-[14rem] bg-gray-800 b-t-2 border-gray-700">
                 <div className="w-full h-full flex gap-5 flex-wrap p-4">
                     {Helpers.map((helper: HelpersType, index: React.Key) => (
@@ -35,7 +58,7 @@ const Editor = () => {
                             <svg
                                 stroke="currentColor"
                                 fill="currentColor"
-                                stroke-width="0"
+                                strokeWidth="0"
                                 viewBox="0 0 512 512"
                                 height="1em"
                                 width="1em"
@@ -55,10 +78,12 @@ const Editor = () => {
                             </div>
                         </div>
                     ))}
+                    <button onClick={runCode}>Run</button> // Change this to the run button. //
+                    <p style={{ color: 'red' }}>{error}</p>
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default Editor;
