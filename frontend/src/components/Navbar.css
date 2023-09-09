@@ -1,0 +1,21 @@
+.options > span {
+    color: #ffffff9f;
+    cursor: pointer;
+}
+.options > span:hover {
+    color: white;
+}
+
+#navbar > li > span {
+    font-size: 1rem;
+}
+
+#navbar > li:hover > .file-options {
+    display: inline;
+}
+.file-options {
+    display: none; 
+}
+.file-options:hover {
+    color: white;
+}

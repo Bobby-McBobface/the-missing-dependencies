@@ -1,240 +1,197 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
+import './Editor.css'
 
-interface HelpersType {
-    name: string;
-    iconColor: string;
-    borderColor: string;
-}
 
-const KeyPad = ({ current }: { current: number }) => {
-    const Move = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        const arrow = e.currentTarget.dataset.arrow;
-        const pixel = document.querySelector(`[data-pixel="${current}"]`);
-        pixel?.classList.remove("bg-gray-600");
-        switch (arrow) {
-            case "up":
-                if (current > 8) {
-                    current -= 8;
-                }
-                break;
-            case "down":
-                if (current < 57) {
-                    current += 8;
-                }
-                break;
-            case "left":
-                if (current > 1) {
-                    current -= 1;
-                }
-                break;
-            case "right":
-                if (current < 64) {
-                    current += 1;
-                }
-                break;
-            default:
-                break;
-        }
-        const newPixel = document.querySelector(`[data-pixel="${current}"]`);
-        newPixel?.classList.add("bg-gray-600");
-    };
-    return (
-        <div className="flex justify-center items-center w-1/5 bg-gray-800 p-2">
-            <div className="grid grid-cols-3 grid-rows-2 gap-2 text-white text-2xl">
-                <div />
-                <div
-                    className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
-                    data-arrow="up"
-                    onClick={Move}
-                >
-                    <svg
-                        stroke="currentColor"
-                        fill="none"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M8 7l4-4m0 0l4 4m-4-4v18"
-                        ></path>
-                    </svg>
-                </div>
-                <div />
-                <div
-                    className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
-                    data-arrow="left"
-                    onClick={Move}
-                >
-                    <svg
-                        stroke="currentColor"
-                        fill="none"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M7 16l-4-4m0 0l4-4m-4 4h18"
-                        ></path>
-                    </svg>
-                </div>
-                <div
-                    className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
-                    data-arrow="down"
-                    onClick={Move}
-                >
-                    <svg
-                        stroke="currentColor"
-                        fill="none"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M16 17l-4 4m0 0l-4-4m4 4V3"
-                        ></path>
-                    </svg>
-                </div>
-                <div
-                    className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
-                    data-arrow="right"
-                    onClick={Move}
-                >
-                    <svg
-                        stroke="currentColor"
-                        fill="none"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        ></path>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    );
-};
+import { getMapping, newDefaultGrid } from '../utils/mapping'
+
+const mapping = getMapping()
+
+// const KeyPad = ({ current }: { current: number }) => {
+//     const Move = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+//         const arrow = e.currentTarget.dataset.arrow;
+//         const pixel = document.querySelector(`[data-pixel="${current}"]`);
+//         pixel?.classList.remove("bg-gray-600");
+//         switch (arrow) {
+//             case "up":
+//                 if (current > 8) {
+//                     current -= 8;
+//                 }
+//                 break;
+//             case "down":
+//                 if (current < 57) {
+//                     current += 8;
+//                 }
+//                 break;
+//             case "left":
+//                 if (current > 1) {
+//                     current -= 1;
+//                 }
+//                 break;
+//             case "right":
+//                 if (current < 64) {
+//                     current += 1;
+//                 }
+//                 break;
+//             default:
+//                 break;
+//         }
+//         const newPixel = document.querySelector(`[data-pixel="${current}"]`);
+//         newPixel?.classList.add("bg-gray-600");
+//     };
+//     return (
+//         <div className="flex justify-center items-center w-1/5 bg-gray-800 p-2">
+//             <div className="grid grid-cols-3 grid-rows-2 gap-2 text-white text-2xl">
+//                 <div />
+//                 <div
+//                     className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
+//                     data-arrow="up"
+//                     onClick={Move}
+//                 >
+//                     <svg
+//                         stroke="currentColor"
+//                         fill="none"
+//                         strokeWidth="2"
+//                         viewBox="0 0 24 24"
+//                         aria-hidden="true"
+//                         height="1em"
+//                         width="1em"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                     >
+//                         <path
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                             d="M8 7l4-4m0 0l4 4m-4-4v18"
+//                         ></path>
+//                     </svg>
+//                 </div>
+//                 <div />
+//                 <div
+//                     className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
+//                     data-arrow="left"
+//                     onClick={Move}
+//                 >
+//                     <svg
+//                         stroke="currentColor"
+//                         fill="none"
+//                         strokeWidth="2"
+//                         viewBox="0 0 24 24"
+//                         aria-hidden="true"
+//                         height="1em"
+//                         width="1em"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                     >
+//                         <path
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                             d="M7 16l-4-4m0 0l4-4m-4 4h18"
+//                         ></path>
+//                     </svg>
+//                 </div>
+//                 <div
+//                     className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
+//                     data-arrow="down"
+//                     onClick={Move}
+//                 >
+//                     <svg
+//                         stroke="currentColor"
+//                         fill="none"
+//                         strokeWidth="2"
+//                         viewBox="0 0 24 24"
+//                         aria-hidden="true"
+//                         height="1em"
+//                         width="1em"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                     >
+//                         <path
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                             d="M16 17l-4 4m0 0l-4-4m4 4V3"
+//                         ></path>
+//                     </svg>
+//                 </div>
+//                 <div
+//                     className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 duration-100 hover:scale-110"
+//                     data-arrow="right"
+//                     onClick={Move}
+//                 >
+//                     <svg
+//                         stroke="currentColor"
+//                         fill="none"
+//                         strokeWidth="2"
+//                         viewBox="0 0 24 24"
+//                         aria-hidden="true"
+//                         height="1em"
+//                         width="1em"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                     >
+//                         <path
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                             d="M17 8l4 4m0 0l-4 4m4-4H3"
+//                         ></path>
+//                     </svg>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
 
 const Editor = () => {
-    const Helpers: HelpersType[] = [
-        {
-            name: "if",
-            iconColor: "#FFFF00",
-            borderColor: "#fafa82",
-        },
-        {
-            name: "print",
-            iconColor: "#00FF00",
-            borderColor: "#a2f5a2",
-        },
-    ];
-    const pixels = [
-        [1, 2, 3, 4, 5, 6, 7, 8],
-        [9, 10, 11, 12, 13, 14, 15, 16],
-        [17, 18, 19, 20, 21, 22, 23, 24],
-        [25, 26, 27, 28, 29, 30, 31, 32],
-        [33, 34, 35, 36, 37, 38, 39, 40],
-        [41, 42, 43, 44, 45, 46, 47, 48],
-        [49, 50, 51, 52, 53, 54, 55, 56],
-        [57, 58, 59, 60, 61, 62, 63, 64],
-    ];
+    const [pixels, setPixels] = useState<number[][][]>(newDefaultGrid());
+    const [text, setText] = useState<string>('')
+    console.log(text)
 
-    let current = 1;
     useEffect(() => {
-        const pixel = document.querySelector(`[data-pixel="${current}"]`);
-        pixel?.classList.add("bg-gray-600");
-    }, [current]);
+        console.log('reloading')
+        const newPixels = newDefaultGrid()
+        const size = newPixels.length
+        let index = 0;
+        while (index < text.length && index < size*size) {
+            newPixels[Math.floor(index/size)][index%size] = mapping[text.charCodeAt(index)]    
+            index++
+        }
+        setPixels(newPixels)
+    }, [text])  
+
     return (
-        <div className="flex flex-col gap-4 grow h-screen">
-            <div className="text-3xl font-semibold py-6 text-center tracking-wider uppercase ">
-                Editor
-            </div>
-            <div className="grow p-4">
-                <div className="p-2 bg-gray-700 h-full grid grid-cols-8 grid=rows-8 gap-2">
-                    {pixels.map((row) =>
-                        row.map((pixel, index) => (
-                            <div
-                                className="h-auto w-auto bg-gray-800 rounded-lg"
-                                data-pixel={pixel}
-                                key={index}
-                                onClick={() => {
-                                    const currentPixel = document.querySelector(
-                                        `[data-pixel="${current}"]`
-                                    );
-                                    currentPixel?.classList.remove(
-                                        "bg-gray-600"
-                                    );
-                                    current = pixel;
-                                    const newPixel = document.querySelector(
-                                        `[data-pixel="${current}"]`
-                                    );
-                                    newPixel?.classList.add("bg-gray-600");
-                                }}
-                            >
-                                {pixel}
-                            </div>
-                        ))
-                    )}
+        <div className="h-[100%] p-4" id="editor">
+            <div className="window-header flex items-start justify-between">
+                <p className="font-semibold text-left tracking-wider uppercase title">
+                    Editor
+                </p>
+                <div className="options flex items-center gap-2">
+                    <span className="material-symbols-outlined" title="Run">
+                        play_arrow
+                    </span>
+                    <span className="material-symbols-outlined" title="save">
+                        save
+                    </span>
                 </div>
-            </div>
-            <div className="flex gap-5">
-                <div className="h-[14rem] bg-gray-800 b-t-2 border-gray-700 w-4/5">
-                    <div className="w-full h-full flex gap-5 flex-wrap p-4">
-                        {Helpers.map(
-                            (helper: HelpersType, index: React.Key) => (
-                                <div
-                                    className="h-auto w-auto flex gap-2 items-center"
-                                    key={index}
-                                >
-                                    <svg
-                                        stroke="currentColor"
-                                        fill="currentColor"
-                                        stroke-width="0"
-                                        viewBox="0 0 512 512"
-                                        height="1em"
-                                        width="1em"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="text-3xl border-2 rounded-full"
-                                        style={
-                                            {
-                                                color: helper.iconColor,
-                                                borderColor: helper.borderColor,
-                                            } as React.CSSProperties
-                                        }
-                                    >
-                                        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>
-                                    </svg>
-                                    <div className="text-2xl font-light">
-                                        {helper.name}
-                                    </div>
+            </div>  
+            <div id="image-container">
+                <div id="image" 
+                    style={{
+                        gridTemplateRows: `repeat(${pixels.length}, ${1/pixels.length}fr)`,
+                        gridTemplateColumns: `repeat(${pixels.length}, ${1/pixels.length}fr)`
+                    }}>
+                    {pixels.map(row => {
+                        return row.map(([r, g, b]) => {
+                            return (
+                                <div className="pixel duration-300" style={{backgroundColor: `rgb(${r}, ${g}, ${b})`}}>
                                 </div>
                             )
-                        )}
-                    </div>
+                        })
+                    })}
                 </div>
-                <KeyPad current={current} />
-            </div>
+            </div>  
+            <textarea 
+                spellCheck="false"
+                autoFocus 
+                style={{resize: 'none', padding: '1rem', fontSize: '.9rem', fontFamily: 'monospace'}}
+                onChange={e => setText(e.target.value)}
+                placeholder="Type your text..."
+                >
+            </textarea>
         </div>
     );
 };

@@ -5,7 +5,7 @@ from PIL import Image
 import consts
 
 
-class ImageAes:
+class ImageAes128:
     def __init__(self, key: NDArray[np.uint8]):
         self._expkeys = self._expand_key(key)
 
