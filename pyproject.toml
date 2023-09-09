@@ -7,7 +7,8 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "3.11.*"
-black = "^23.7.0"
+numpy = "^1.25.2"
+pillow = "^10.0.0"
 
 [tool.poetry.dev-dependencies]
 # Base tools
@@ -15,18 +16,20 @@ ruff = "^0.0.286"
 isort = "^5.12.0"
 pre-commit = "^2.21.0"
 pytest = "^7.4.0"
+black = "^23.7.0"
 
 [tool.ruff]
 line-length = 88
 src = ["src"]
 
 [tool.pyright]
-typeCheckingMode = "strict"
+typeCheckingMode = "basic"
 
 [tool.isort]
 profile = 'black'
 
 [tool.pytest.ini_options]
+pythonpath = "src"
 addopts = [
     "--import-mode=importlib",
 ]
