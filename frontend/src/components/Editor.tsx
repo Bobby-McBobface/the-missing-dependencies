@@ -194,6 +194,6 @@ const Editor = () => {
             </textarea>
         </div>
     );
-};
+}
 
 export default Editor;
