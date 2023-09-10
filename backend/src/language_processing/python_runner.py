@@ -11,7 +11,7 @@ def python_runner(byte_str: bytes):
     sys.stdout = io.StringIO()
 
     try:
-        exec(decoded_text, {"img": Image.new("RGBA", (128, 128))})
+        exec(decoded_text)
         captured_output = sys.stdout.getvalue()
     finally:
         sys.stdout = stdout_backup

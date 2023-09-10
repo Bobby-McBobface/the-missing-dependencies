@@ -1,13 +1,16 @@
+from random import randint
+
 import numpy as np
 from numpy.typing import NDArray
 from PIL import Image
 
-import consts
+from . import consts
 
 
 class ImageAes128:
-    def __init__(self, key: NDArray[np.uint8]):
-        self._expkeys = self._expand_key(key)
+    def __init__(self):
+        self.key = np.array([[randint(0, 255) for _ in range(4)] for _ in range(4)], np.uint8)
+        self._expkeys = self._expand_key(self.key)
 
     def encrypt_image_as_image(self, image: Image.Image) -> Image.Image:
         return Image.fromarray(self.encrypt_image_as_array(image), image.mode)  # type: ignore

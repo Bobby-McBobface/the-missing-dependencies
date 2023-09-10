@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext } from "react";
 import "./Output.css";
+import { FileManagerContext } from "./FileManagerContextProvider";
 
 const Output = () => {
-    const [output, setOutput] = useState<string>("");
+    const fm = useContext(FileManagerContext)
     return (
         <div
             id="output-window"
@@ -15,18 +16,24 @@ const Output = () => {
                 <div className="options flex items-center gap-2">
                     <span
                         className="material-symbols-outlined cursor-pointer"
-                        title="Clear"
-                        onClick={() => setOutput("")}
+                        title="Clear Output"
+                        onClick={() => fm.setOutput("")}
                     >
                         delete
                     </span>
                 </div>
             </div>
             <textarea
-                id="output"
-                style={{ backgroundColor: "#0A192F" }}
+                id="output" 
+                style={{
+                    resize: "none",
+                    fontSize: ".9rem",
+                    fontFamily: "monospace", 
+                    backgroundColor: "#0A192F",
+                    overflow: 'auto'
+                }}
                 disabled
-                value={output}
+                value={fm.output}
             ></textarea>
         </div>
     );
