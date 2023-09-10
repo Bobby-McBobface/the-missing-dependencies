@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import "./Editor.css";
 import { getMapping, newDefaultGrid } from "../utils/mapping";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
+import React from "react";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
 const mapping = getMapping();
 
@@ -20,6 +24,9 @@ const Editor = () => {
         setPixels(newPixels);
     }, [text]);
 
+    const onChange = React.useCallback((value: string) => {
+        setText(value);
+    }, []);
     return (
         <div className="h-[100%]" id="editor">
             <div className="window-header flex items-start justify-between">
@@ -49,32 +56,34 @@ const Editor = () => {
                     className="border-2 border-slate-700"
                 >
                     {pixels.map((row) => {
-                        return row.map(([r, g, b]) => {
+                        return row.map(([r, g, b], idx: React.Key) => {
                             return (
                                 <div
                                     className="pixel duration-300"
                                     style={{
                                         backgroundColor: `rgb(${r}, ${g}, ${b})`,
                                     }}
+                                    key={idx}
                                 ></div>
                             );
                         });
                     })}
                 </div>
             </div>
-            <textarea
-                spellCheck="false"
-                autoFocus
-                style={{
-                    resize: "none",
-                    padding: "1rem",
-                    fontSize: ".9rem",
-                    fontFamily: "monospace",
-                }}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Type your text..."
-                className="border-t-2 border-slate-700 bg-slate-800"
-            ></textarea>
+            <div
+                className="border-t-2 border-slate-700 rounded-sm overflow-y-scroll"
+                id="editor"
+            >
+                <CodeMirror
+                    lang="python"
+                    value={text}
+                    onChange={onChange}
+                    className="h-full w-full text-xl"
+                    extensions={[python()]}
+                    theme={vscodeDark}
+                    indentWithTab={true}
+                />
+            </div>
         </div>
     );
 };
