@@ -430,7 +430,8 @@ class PietInterpreter:
         )
 
 
-test = Image.open("./tests/piet_hello4.png")
-inter = PietInterpreter(test)
+if __name__ == "__main__":
+    test = Image.open("./tests/piet_hello4.png")
+    inter = PietInterpreter(test)
 
-inter.runner()
+    inter.runner()
