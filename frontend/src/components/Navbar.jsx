@@ -98,7 +98,7 @@ const Navbar = () => {
                         image
                     </span>
                     <span className="text-gray-200 text-xl font-extralight tracking-tighter">
-                        Drop files here
+                        Upload Encrypted files here
                     </span>
                     <span />
                 </div>
