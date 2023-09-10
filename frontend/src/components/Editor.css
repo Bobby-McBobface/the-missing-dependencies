@@ -31,13 +31,13 @@ textarea {
     height: 100%;
     padding: 1rem;
     box-sizing: border-box;
-    border: none;
+    border: none 2px none none;
     border-radius: 4px;
-    background-color: #1e304b;
     font-size: 1rem;
     resize: none;
     outline: none;
 }
+
 textarea:focus::placeholder {
-    color: transparent  
+    color: transparent
 }
