@@ -1,14 +1,15 @@
-from random import randint
-from pathlib import Path
 import os
 import io
+import sys
+from random import randint
+from pathlib import Path
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from PIL import Image
 import numpy as np
 
-from language_processing.python_runner import python_runner
+from language_processing.piet_runner import PietInterpreter
 from encryption.image_aes import ImageAes128
 
 app = Flask(__name__)
@@ -38,13 +39,15 @@ def get_mapping():
 @app.route('/run', methods=['POST'])
 def run_code():
     code_img = request.json # Assuming the code is sent as a JSON object
-    code_bytes = bytearray()
-    for row in code_img:        # type: ignore
-        code_bytes += bytes(REV_MAPPING[tuple(color)] for color in row)
-    code_bytes = code_bytes.rstrip(b'\x00')
+    im = Image.fromarray(np.array(code_img, np.uint8))
 
     try:
-        return python_runner(code_bytes), 200
+        stdout_backup = sys.stdout
+        sys.stdout = io.StringIO()
+        PietInterpreter(im).runner()
+        captured_output = sys.stdout.getvalue()
+        sys.stdout = stdout_backup
+        return captured_output, 200
     except Exception as e:
         print('/run', e)
         return str(e), 500
@@ -93,18 +96,9 @@ def save_file(filename):
 def get_file(filename):
     try:
         filepath = USER_DIR / filename
-        with Image.open(filepath) as image:
-            image_arr = np.array(image, np.uint8).reshape((IMAGE_SIZE, IMAGE_SIZE, 3)).tolist()
-        text = ''
-        for row in image_arr:
-            for pix in row:
-                text += '' if REV_MAPPING[tuple(pix)] == 0 else chr(REV_MAPPING[tuple(pix)])
-
-        resp = {
-            'pixels': image_arr,
-            'text': text
-        }
-        return jsonify(resp), 200
+        with Image.open(filepath) as image: 
+            image_arr = np.array(image, np.uint8).tolist()
+        return jsonify(image_arr), 200
     except Exception as e:
         print('/files/filename', e)
         return str(e), 500
@@ -123,6 +117,16 @@ def download_file(filename):
     except Exception as e:
         print('/download', e)
         return str(e), 500
+
+@app.route('/upload-encrypted', methods=['POST'])
+def upload_encrypted():
+    f = request.files['file']
+    img = Image.open(f.stream)
+    img = CODEC.decrypt_image_as_image(img)
+    filename = f.filename[0:len('encrypted_')] # type: ignore
+    
+    img.save(USER_DIR/Path((filename+'.png')).name)
+    return '', 200
 
 
 if __name__ == '__main__':

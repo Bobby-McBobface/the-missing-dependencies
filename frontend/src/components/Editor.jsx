@@ -1,29 +1,43 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "./Editor.css";
 import { newDefaultGrid } from "../utils/mapping";
 
 import { FileManagerContext } from "./FileManagerContextProvider";
 
-let mapping = []
+let mapping = [
+    [255, 192, 192],    // Light red
+    [255, 0, 0],    // Red
+    [192, 0, 0],    // Dark red
+    [255, 255, 192],    // Light yellow
+    [255, 255, 0],      // Yellow
+    [192, 192, 0],      // Dark yellow
+    [192, 255, 192],    // Light green
+    [0, 255, 0],    // Green
+    [0, 192, 0],    // Dark green
+    [192, 255, 255],    // Light cyan
+    [0, 255, 255],      // Cyan
+    [0, 192, 192],      // Dark cyan
+    [192, 192, 255],    // Light blue
+    [0, 0, 255],    // Blue
+    [0, 0, 192],    // Dark blue
+    [255, 192, 255],    // Light magenta
+    [255, 0, 255],      // Magenta
+    [192, 0, 192],      // Dark magenta
+    [255, 255, 255],    // White
+    [0, 0, 0],          // Black
+]
 
 const Editor = () => {
     const fm = useContext(FileManagerContext)
     const [pixels, setPixels] = useState(newDefaultGrid());
     const [text, setText] = useState("");
+    const currPixel = useRef(0)
 
     useEffect(() => {
         if (fm.currOpen.length === 0) return
-        Promise.all([
-            fetch('http://localhost:5000/mapping'),
-            fetch('http://localhost:5000/files/' + fm.currOpen)
-        ])
-        .then(([rMap, rFileData]) => Promise.all([rMap.json(), rFileData.json()]))
-        .then(([m, fileData]) => { 
-            mapping = m; 
-            console.log(fileData)
-            setPixels(fileData.pixels);
-            setText(fileData.text) 
-        }) 
+        fetch('http://localhost:5000/files/' + fm.currOpen)
+        .then((resp) => resp.json())
+        .then((p) => { setPixels(p) }) 
     }, [fm.currOpen])
     
     useEffect(() => {
@@ -37,6 +51,10 @@ const Editor = () => {
         }
         setPixels(newPixels);
     }, [text]);
+
+    useEffect(() => {
+        currPixel.current = 0
+    }, [])
 
 
     const run = async () => {
@@ -60,6 +78,14 @@ const Editor = () => {
             body: JSON.stringify(pixels)
         })
         if (resp.ok) fm.setOutput(prev => prev + '>>> save ' + fm.currOpen + ' - SUCCESS\n')
+    }
+
+    const placeColor = (color) => {
+        let newPixels = JSON.parse(JSON.stringify(pixels))
+        console.log(newPixels)
+        newPixels[Math.floor(currPixel.current/pixels.length)][currPixel.current%pixels.length] = color
+        setPixels(newPixels)
+        currPixel.current++;
     }
 
     return (
@@ -102,13 +128,14 @@ const Editor = () => {
                             }fr)`,
                         }}
                     >
-                        {pixels.map((row) => {
-                            return row.map(([r, g, b]) => {
+                        {pixels.map((row, i) => {
+                            return row.map(([r, g, b], j) => {
                                 return (
                                     <div
                                         className="pixel duration-300"
                                         style={{
                                             backgroundColor: `rgb(${r}, ${g}, ${b})`,
+                                            border: (pixels.length * i + j === currPixel.current ? '2px solid black' : 'none')
                                         }}
                                     ></div>
                                 );
@@ -116,19 +143,16 @@ const Editor = () => {
                         })}
                     </div>
                 </div>
-                <textarea
-                    spellCheck="false"
-                    style={{
-                        resize: "none",
-                        padding: "1rem",
-                        fontSize: ".9rem",
-                        fontFamily: "monospace",
-                    }}
-                    onChange={(e) => setText(e.target.value)}
-                    value={text}
-                    placeholder="Type your Python program..."
-                    className="border-t-2 border-slate-700 bg-slate-800"
-                ></textarea>
+                <div id="colors" className="h-full w-full">
+                    {mapping.map(([r,g,b]) => {
+                        return (
+                            <div 
+                                className="color" 
+                                style={{ backgroundColor: `rgb(${r}, ${g}, ${b})` }}
+                                onClick={() => placeColor([r,g,b])}></div>
+                        )
+                    })}
+                </div>
             </>}
         </div>
     );

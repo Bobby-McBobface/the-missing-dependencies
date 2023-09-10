@@ -5,6 +5,22 @@ import { FileManagerContext } from "./FileManagerContextProvider";
 const Navbar = () => {
     const fm = useContext(FileManagerContext)
 
+    const uploadFile = async (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            console.log(file)
+            const formData = new FormData();
+            formData.append("file", file);
+            const resp = await fetch('http://localhost:5000/' + "upload-encrypted", {
+                method: "POST",
+                body: formData,
+            });
+            if (resp.ok) {
+                fm.setFiles(prev => [...prev, file.name.replace('encrypted_', '')])
+            }
+        }
+    };
+
     const deleteFile = async (filename) => {
         const resp = await fetch('http://localhost:5000/files/'+filename, {
             method: 'DELETE'
@@ -73,6 +89,25 @@ const Navbar = () => {
                     </li>
                 ))}
             </ul>}
+            <div className="m-auto p-5 border-spacing-5 border-2 border-[#04db8c] border-dashed rounded-lg h-[20%] w-full flex justify-center items-center relative">
+                <div className="flex flex-col justify-center items-center gap-3">
+                    <span
+                        className="material-symbols-outlined text-gray-300 text-4xl selection:rounded-xl"
+                        title="drop files here"
+                    >
+                        image
+                    </span>
+                    <span className="text-gray-200 text-xl font-extralight tracking-tighter">
+                        Drop files here
+                    </span>
+                    <span />
+                </div>
+                <input
+                    type="file"
+                    className="absolute w-full h-full p-5 top-0 left-0 opacity-0 cursor-pointer"
+                    onChange={uploadFile}
+                />
+            </div>
         </div>
     );
 };

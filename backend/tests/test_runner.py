@@ -4,7 +4,7 @@ import sys
 
 from PIL import Image
 
-from language_processing import PietInterpreter, python_runner
+from src.language_processing import PietInterpreter, python_runner
 
 
 def test_python():
