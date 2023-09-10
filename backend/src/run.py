@@ -125,7 +125,7 @@ def upload_encrypted():
     img = CODEC.decrypt_image_as_image(img)
     filename = f.filename[len('encrypted_'):] # type: ignore
     
-    img.save(USER_DIR/Path((filename+'.png')).name)
+    img.save(USER_DIR/Path(filename).name)
     return '', 200
 
 
