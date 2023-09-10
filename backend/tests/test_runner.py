@@ -14,6 +14,7 @@ def test_python():
 
 
 def test_piet():
+    raise Exception(os.getcwd())
     for file in os.listdir("./backend/tests/imgs"):
         filename = os.fsdecode(file)
         im = Image.open(f"./backend/tests/imgs/{filename}")
