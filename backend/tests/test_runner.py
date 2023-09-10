@@ -14,9 +14,9 @@ def test_python():
 
 
 def test_piet():
-    for file in os.listdir("./backend/tests/imgs"):
+    for file in os.listdir("./tests/imgs"):
         filename = os.fsdecode(file)
-        im = Image.open(f"./backend/tests/imgs/{filename}")
+        im = Image.open(f"./tests/imgs/{filename}")
 
         stdout_backup = sys.stdout
         sys.stdout = io.StringIO()
