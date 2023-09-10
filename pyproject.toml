@@ -31,7 +31,7 @@ typeCheckingMode = "basic"
 profile = 'black'
 
 [tool.pytest.ini_options]
-pythonpath = "src"
+pythonpath = "./backend/src"
 addopts = [
     "--import-mode=importlib",
 ]
