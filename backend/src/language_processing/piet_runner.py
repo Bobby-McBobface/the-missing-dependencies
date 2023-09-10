@@ -237,7 +237,7 @@ class PietInterpreter:
                 else:
                     break
             else:
-                print("Terminated")
+                # print("Terminated")
                 return
 
             if next_colour == WHITE:
